@@ -1,0 +1,197 @@
+The new version of Battleship will be functionally quite similar, although
+it will probably have some snazzier functionality (such as automated ship
+placement) and a more advanced algorithm for ship placement. The purpose of
+the rewrite, however, is to try to practice better OOD. The difficulties with
+the original code were (1) the classes were far too big, indicating that I
+was missing an abstraction level or something; (2) the methods were far too
+long and complicated; (3) I tended to pass too many variables, rather than
+relying on features of the objects; (4) my returns were too complicated.
+Most importantly, I didn't implement unit tests! While I could simply add
+unit tests to my old code, I strongly suspect I will do a better job if I
+start over.
+
+One other thing! I tended to get extremely confused by the fact that x and y
+were not in the order x, y on board objects. So I should use "let" and "num"
+instead of x and y, and make sure I have it in the format "a1" or [let][num]
+(or perhaps [a][n]). Hence since the letters come first they'll have to be the
+enclosing array, up the left/y axis, and the numbers the inner arrays. I just
+won't call it x and y.
+
+I've also been wondering about how to deal with ships. The old method rather
+stupidly examined the board in order to generate the objects and also to
+determine if the ships had even been hit. I'm thinking, instead, that there is
+some much easier way to construct everything. Indeed, instead of constructing
+the board object of character objects such as '.', 'x', etc. (which of course
+will still have to be the case at some level of abstraction), I can instead
+simply have lists of unhit water, misses, and ships, and then construct the
+board by overlaying these objects. Then, to see if a ship was hit, instead of
+examining the board, I examine the ships. The board is redrawn based on the
+state of the water and ships. First populate everything with water; then
+swap in the missed water; then swap in the hit and intact ship points.
+
+Indeed, the whole notion of mediating the hits and misses by the "objective
+state of the board" vs. the objects themselves is obviously wrongheaded.
+The appearance of the board to the player or the computer is important only
+for purposes of (a) display and (b) algorithmic calculation.
+
+By this analysis it seems we need the following classes:
+Ship (constructed of coords)
+Ship > the five ship types
+Hits (!)
+Misses (!)
+Water (constructed automatically by subtracting stuff?)
+Board
+Board > the player board (for display)
+Board > the computer board (for algorithmic fiddling)
+
+Now I'm not sure about that so let's not say that's the final word. Another
+thing to examine are the main functions. There are so many. And I don't think I
+can just list them; they each require consideration. For example, one of the
+first things to do is to determine where the enemy ships are:
+  place_enemy_ships
+But exactly what objects are being changed in the execution of this method?
+If they don't "live" on the board, which they did in the first version, don't
+they belong in a new Fleet class? So it seems!
+  Fleet
+
+OK, let's not talk about methods. Let's talk about stuff that is done in the
+game, which methods map onto. Roughly in order:
+1. The enemy ships are placed. (Fleet & Ships & ind. ship types)
+2. The player's ships are placed. (Ditto although differently.)
+3. The game begins with a toss. (!! A Game class! Of course! This makes it
+possible to count the total number of games played, calculate win/loss ratio,
+track the stage the game is in, etc.)
+4. The player attacks by providing coords. This seems to involve the Game,
+the Board, and indirectly all the objects. Perhaps each attack could itself be
+a newly-constructed object, and a game might include a list of attacks (as a
+chess game does).
+5. Ditto the computer.
+6. A player/computer can hit the opponent's ships, or miss.
+7. The program determines if sunk or not.
+8. The program determines if the game has ended or not.
+
+If each class is supposed to have one main responsibility, let's see how that
+might work.
+
+======================
+board.rb Module
+
+BlankBoard: Creates a new board (setup only).
+  # Generates blank board.
+
+BoardContents: Updates the contents of boards.
+  # Given a Fleet, writes ships to board.
+  # Given Shotlist, writes shots to board.
+
+PublicBoard: Updates the "public" knowledge about a board.
+  # Given BoardContents and FleetStatus, generates a board array.
+
+DisplayedBoard: Displays the board to the user.
+  # Given a PublicBoard, displays it to the user.
+
+======================
+fleet.rb Module
+
+FleetConstructor: Creates ships of the fleet (setup only).
+  # Creates the ships of the fleet; this method knows the five ship types.
+  # Iterates over fleet, initializing ShipCoords, to get coords.
+
+  NOTE: The plan here is to create an array of references to Ship objects.
+  When searching the ships (e.g., for hits), it will simply interate over
+  the array.
+
+FleetStatus: Given a fleet, determines fleet status.
+  # Determine whether a particular ship in the fleet is sunk or not.
+  # Updates count of unfound, hit, and sunken ships.
+  # Determine whether a fleet is all sunk or not.
+
+FleetDamage: Determines success of a shot.
+  # Given a fleet and a shot, determines whether a shot is a hit or a miss,
+    and on which ship.
+  # Save info about ship after hit.
+
+Ship: Maintains information about an individual ship.
+  # Return hash of ship's coords and whether they are hit/unhit.
+  # Given a coord (from FleetStatus), updates its hit-status for the ship.
+
+======================
+ship_coords.rb module
+
+  ShipCoords: Places ships of the enemy fleet (setup only). Called from
+  within FleetConstructor. Object = a coord set, given info about a ship.
+    # Validates locations for ships, given a fleet.
+
+  EnemyShipCoords < ShipCoords: Places ships of the enemy fleet (setup only).
+    # Randomly generates orientation and locations for ships.
+    # Calls ShipCoords method "validates locations for ships."
+
+  PlayerShipCoords < ShipCoords: Places ships of the player fleet (setup only).
+    # Solicits input on location of ships.
+    # Initially validates input on location of ships (not nec. for enemy ships).
+    # Calls ShipCoords method "validates locations for ships."
+
+======================
+
+Ballistics: Determines best shot at a PublicBoard.
+(This is going to have a lot of related classes.)
+
+Shot: A coord representing a missile strike.
+  # Given ShotList and coord, determines whether a shot is legal.
+  # Passes shots to FleetStatus; receives back hit/miss status.
+  # Passes shot infos to Shots.
+
+PlayerShot < Shot
+  # Gets coords from player.
+
+ComputerShot < Shot
+  # Gets coords from computer.
+
+ShotList: Stores information about Shots.
+  # Lists shot coords in order and whether they were hits or misses.
+  # Counts number of shots.
+  # Returns hit/miss ratio.
+
+======================
+
+Turn: Runs one turn (of either a player or a computer).
+
+Message: Manages player message system.
+  # Accepts/compiles messages from all other methods.
+  # Posts messages when appropriate, then clears the $message variable.
+
+======================
+game_wrapping.rb Module
+GameReferee: Determines whose turn it is.
+  # Flips coin.
+  # Determines who goes first.
+  # Toggles turns.
+
+GameList: Stores information about all games played.
+  # Saves information about games after they're over.
+  # Reports statistics.
+
+GameSetup: Collects and returns startup information about the current game.
+  # Generate enemy fleet
+  # Generate player fleet
+
+GameDaemon: Starts and stops the game.
+  # Starts game.
+  # Determines if there is a winner yet.
+  # Save game's current state.
+  # Responds to requests to quit.
+  # Invites player to play another game.
+
+
+==================
+
+TO DO NEXT:
+Goal is to get valid coords for a ship. The logic is outlined already. Will
+very probably take a while, since there are many methods and tests to write,
+for both the enemy logic, the player logic, and the common logic. The other
+aspect that's going to be difficult here is that the player sequence requires
+that BoardModule be completely built out.
+
+After that, back to fleet.rb and initialize the new FleetStatus class. After
+that, setup should be done. Of course, the shooting algorithm is the next big
+task, but I suspect everything's going to be a lot easier with the new data
+structures, i.e., with fleet info all available in one place.
