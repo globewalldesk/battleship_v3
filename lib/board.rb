@@ -18,16 +18,14 @@ module BoardModule
     # #board is later edited by the program to hits, misses,
     # and sunken ships to the player or computer.
     def generate_blank_board
-      board = []
-      row = %w(. . . . . . . . . .)
-      10.times {board << row}
+      board = Array.new(10) {Array.new(10) {"."} }
       board
     end
 
     # Simply displays the board to the user. Note, takes a whole 10x10
     # array, *not* just a few coordinates
     def display_board
-      puts "=========="
+      puts "\n=========="
       puts (@enemy_or_player == "enemy" ? "ENEMY ZONE" : "YOUR ZONE")
       puts "      a   b   c   d   e   f   g   h   i   j", "\n"
       n = 0

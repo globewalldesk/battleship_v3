@@ -185,24 +185,23 @@ GameDaemon: Starts and stops the game.
 ==================
 
 TO DO NEXT:
-Now the fun part: actually placing the ships on the board. This is done how?
-Sometime after the coords are validated. Indeed it has to be after each ship.
+(1) I need to get my tests passing (they definitely don't anymore, they need
+to be rewritten after certain method returns have changed); (2) go back and
+write a zillion unit tests and get them passing; (3) then do refactoring, which
+might end up being a massive job. At the very least I'm going to take Joe's
+advice and add .carrier, .battleship, etc., methods that point to the object.
+I'm also curious to see if I find and reduce some redundancy and entanglement.
+In some places, I need to be passing arguments and getting returns rather than
+hiding everything.
 
-So next to do is board.rb.
+Then comes player placing the ships on the board by hand. This entails doing
+get_player_orientation and get_player_coords, and getting that code
+consistent with the rest...it might be automatically.
 
-ADD .battleship method that points to the object.
+Another thing I'd like to do is to change the automatic ship placement so that
+ships are never right next to each other.
 
 After that, back to fleet.rb and initialize the new FleetStatus class. After
 that, setup should be done. Of course, the shooting algorithm is the next big
 task, but I suspect everything's going to be a lot easier with the new data
 structures, i.e., with fleet info all available in one place.
-
-WHY is there a column of C's? Does it add Cs in fleet.rb, or does it mistakenly
-print a correct table in board.rb? OK, I've *proven* that it's done in fleet.rb.
-
-#puts "coords = #{coords}"
-#puts "coords[0] = #{coords[0]}"
-#puts "coords[0][0] = #{coords[0][0]}"
-#puts "ship = #{ship}"
-#puts "@board = #{@board}"
-#puts "@board.board = #{@board.board}"
