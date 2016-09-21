@@ -1,6 +1,9 @@
-require 'minitest/autorun'
-require './lib/misc'
+require "minitest/autorun"
+require "./lib/settings"
+require "./lib/misc"
 include MiscModule
+require "./lib/board"
+include BoardModule
 
 ##############################################################################
 ##############################################################################

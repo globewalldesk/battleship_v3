@@ -185,13 +185,24 @@ GameDaemon: Starts and stops the game.
 ==================
 
 TO DO NEXT:
-Goal is to get valid coords for a ship. The logic is outlined already. Will
-very probably take a while, since there are many methods and tests to write,
-for both the enemy logic, the player logic, and the common logic. The other
-aspect that's going to be difficult here is that the player sequence requires
-that BoardModule be completely built out.
+Now the fun part: actually placing the ships on the board. This is done how?
+Sometime after the coords are validated. Indeed it has to be after each ship.
+
+So next to do is board.rb.
+
+ADD .battleship method that points to the object.
 
 After that, back to fleet.rb and initialize the new FleetStatus class. After
 that, setup should be done. Of course, the shooting algorithm is the next big
 task, but I suspect everything's going to be a lot easier with the new data
 structures, i.e., with fleet info all available in one place.
+
+WHY is there a column of C's? Does it add Cs in fleet.rb, or does it mistakenly
+print a correct table in board.rb? OK, I've *proven* that it's done in fleet.rb.
+
+#puts "coords = #{coords}"
+#puts "coords[0] = #{coords[0]}"
+#puts "coords[0][0] = #{coords[0][0]}"
+#puts "ship = #{ship}"
+#puts "@board = #{@board}"
+#puts "@board.board = #{@board.board}"

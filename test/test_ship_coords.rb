@@ -1,8 +1,11 @@
-require 'minitest/autorun'
-require './lib/ship_coords'
+require "minitest/autorun"
+require "./lib/settings"
+require "./lib/ship_coords"
 include ShipCoordsModule
-require './lib/fleet'
+require "./lib/fleet"
 include FleetModule
+require "./lib/board"
+include BoardModule
 
 ##############################################################################
 ##############################################################################
@@ -10,8 +13,10 @@ include FleetModule
 class TestShipCoords < Minitest::Test
   def setup
     # Note the .fleet method: these are arrays of fleet ostructs.
-    @enemy_fleet = FleetConstructor.new("enemy").fleet
-    @player_fleet = FleetConstructor.new("player").fleet
+    @board = Board.new("player")
+    @enemy_fleet = FleetConstructor.new(player_or_enemy:"enemy").fleet
+    @player_fleet = FleetConstructor.new(player_or_enemy:"player",
+      board:@board).fleet
     # The following selects the first element of the fleet array, itself a
     # struct.
     @mycoords = EnemyShipCoords.new(ship:@enemy_fleet[0], fleet:@enemy_fleet)
@@ -59,10 +64,13 @@ class TestShipCoords < Minitest::Test
   # contains coords that are in some other ship
   def test_show_ship_coords_are_consistent_with_fleet
     @enemy_fleet[0].coords = [[0,0], [0,1], [0,2], [0,3], [0,4]]
-    # no overlapping coords here!
-    @enemy_fleet[2].coords = [[1,1], [1,2], [1,3]]
+    @enemy_fleet[1].coords = [[1,1], [1,2], [1,3], [1,4]]
+    @enemy_fleet[2].coords = [[2,1], [2,2], [2,3]]
+    @enemy_fleet[3].coords = [[3,1], [3,2], [3,3]]
+    @enemy_fleet[4].coords = [[4,1], [4,2]]
+    # no overlapping coords in the above!
     assert(@mycoords.show_ship_coords_are_consistent_with_fleet)
-    # this has an overlapping coord, 1,0
+    # swapping in new ship coords: these have the overlapping coord 0,0
     @enemy_fleet[1].coords = [[0,0], [1,0], [2,0], [3,0]]
     refute(@mycoords.show_ship_coords_are_consistent_with_fleet)
   end

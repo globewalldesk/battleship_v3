@@ -1,5 +1,6 @@
-require 'minitest/autorun'
-require './lib/board'
+require "./lib/settings"
+require "minitest/autorun"
+require "./lib/board"
 include BoardModule
 
 class TestBoard < Minitest::Test
@@ -15,7 +16,7 @@ class TestBoard < Minitest::Test
       %w(. . . . . . . . . .),
       %w(. . . . . . . . . .),
       %w(. . . . . . . . . .)]
-    @fred = Board.new
+    @fred = Board.new("enemy")
   end
 
   def test_generate_blank_board

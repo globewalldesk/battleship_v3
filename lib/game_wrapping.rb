@@ -1,6 +1,9 @@
 require 'Colorize'
+require './lib/settings'
 require './lib/fleet'
 include FleetModule
+require './lib/board'
+include BoardModule
 
 # All the classes associated with setting up and managing the game context.
 module GameWrappingModule
@@ -14,7 +17,7 @@ class GameDaemon
   def initialize
     welcome_message
     @game_id = get_game_ID # assigns an ID to this game
-    @game_setup = GameSetup.new # sets up boards
+    @game_setup = GameSetup.new # sets up boards and fleet
   end
 
   # Assigns a game ID to the current game.
@@ -48,12 +51,20 @@ end
 
 # Creates startup information about the current game.
 class GameSetup
-  attr_accessor :enemy_fleet, :player_fleet
+  attr_accessor :enemy_fleet, :player_fleet, :enemy_board, :player_board
   def initialize
-    # Generate enemy fleet
-    @enemy_fleet = FleetConstructor.new("enemy")
-    # Generate player fleet
-    @player_fleet = FleetConstructor.new("player")
+    # DE ENEMAH
+    # create blank enemy board; the board array itself is accessed via .board
+    @enemy_board = Board.new("enemy")
+    # generate enemy fleet
+    @enemy_fleet = FleetConstructor.new(player_or_enemy:"enemy",
+      board:@enemy_board)
+    # DE PLAYAH
+    # create blank player board
+    @player_board = Board.new("player")
+    # generate player fleet
+    @player_fleet = FleetConstructor.new(player_or_enemy:"player",
+      board:@player_board)
   end
 end
 
