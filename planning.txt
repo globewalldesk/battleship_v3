@@ -185,14 +185,23 @@ GameDaemon: Starts and stops the game.
 ==================
 
 TO DO NEXT:
-(1) I need to get my tests passing (they definitely don't anymore, they need
-to be rewritten after certain method returns have changed); (2) go back and
-write a zillion unit tests and get them passing; (3) then do refactoring, which
-might end up being a massive job. At the very least I'm going to take Joe's
+... (2) read up about which unit tests particularly need to be made; (3) go back
+and write a zillion unit tests and get them passing; (4) maybe at the same time,
+do refactoring, which might end up being a massive job.
+
+While doing the above, make a list of things to do in order when writing code!
+Share with mentors and get feedback. (This might include commenting classes,
+writing tests, etc.) Then make SuperMemo questions out of it so you don't
+forget. Finish "Coding Rules" and "The Way to Program."
+
+                                  ...At the very least I'm going to take Joe's
 advice and add .carrier, .battleship, etc., methods that point to the object.
 I'm also curious to see if I find and reduce some redundancy and entanglement.
 In some places, I need to be passing arguments and getting returns rather than
-hiding everything.
+hiding everything. I'm fairly sure a great way forward to refactor is to make
+the classes much simpler and fiddle with the things that need changing (such
+as adding the heading "Player Zone" or "Enemy Zone") outside of the poor
+abused (complexified) class.
 
 Then comes player placing the ships on the board by hand. This entails doing
 get_player_orientation and get_player_coords, and getting that code
