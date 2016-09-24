@@ -27,4 +27,9 @@ module MiscModule
     answer = gets.chomp
   end
 
+  def header_generator(enemy_or_player)
+    header = "\n==========\n"
+    header += (enemy_or_player == "enemy" ? "ENEMY ZONE" : "YOUR ZONE")
+  end
+
 end # of MiscModule

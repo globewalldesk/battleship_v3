@@ -185,9 +185,8 @@ GameDaemon: Starts and stops the game.
 ==================
 
 TO DO NEXT:
-... (2) read up about which unit tests particularly need to be made; (3) go back
-and write a zillion unit tests and get them passing; (4) maybe at the same time,
-do refactoring, which might end up being a massive job.
+... (3) do refactoring, which might end up being a massive job, but at the
+same time, go back and write a zillion unit tests and get them passing.—
 
 While doing the above, make a list of things to do in order when writing code!
 Share with mentors and get feedback. (This might include commenting classes,
@@ -201,7 +200,8 @@ In some places, I need to be passing arguments and getting returns rather than
 hiding everything. I'm fairly sure a great way forward to refactor is to make
 the classes much simpler and fiddle with the things that need changing (such
 as adding the heading "Player Zone" or "Enemy Zone") outside of the poor
-abused (complexified) class.
+abused (complexified) class. Another thing that needs doing is making the
+structs into classes; might as well, that was the original plan after all.
 
 Then comes player placing the ships on the board by hand. This entails doing
 get_player_orientation and get_player_coords, and getting that code

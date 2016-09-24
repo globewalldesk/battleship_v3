@@ -9,9 +9,9 @@ module BoardModule
   class Board
     attr_accessor :board
 
-    def initialize(enemy_or_player)
+    def initialize(board_header)
       @board = generate_blank_board
-      @enemy_or_player = enemy_or_player
+      @board_header = board_header # generated in misc to keep this class clean
     end
 
     # Returns blank #board, a 10x10 grid of dots, nothing more.
@@ -19,14 +19,12 @@ module BoardModule
     # and sunken ships to the player or computer.
     def generate_blank_board
       board = Array.new(10) {Array.new(10) {"."} }
-      board
     end
 
-    # Simply displays the board to the user. Note, takes a whole 10x10
+    # Simply displays the board to the user. Note, takes the whole 10x10
     # array, *not* just a few coordinates
     def display_board
-      puts "\n=========="
-      puts (@enemy_or_player == "enemy" ? "ENEMY ZONE" : "YOUR ZONE")
+      puts @board_header
       puts "      a   b   c   d   e   f   g   h   i   j", "\n"
       n = 0
       @board.each do |row|

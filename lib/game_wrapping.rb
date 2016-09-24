@@ -55,13 +55,15 @@ class GameSetup
   def initialize
     # DE ENEMAH
     # create blank enemy board; the board array itself is accessed via .board
-    @enemy_board = Board.new("enemy")
+    enemy_header = header_generator("enemy") # no accessor needed; from misc
+    @enemy_board = Board.new(enemy_header)
     # generate enemy fleet
     @enemy_fleet = FleetConstructor.new(player_or_enemy:"enemy",
       board:@enemy_board)
     # DE PLAYAH
     # create blank player board
-    @player_board = Board.new("player")
+    player_header = header_generator("player")
+    @player_board = Board.new(player_header)
     # generate player fleet
     @player_fleet = FleetConstructor.new(player_or_enemy:"player",
       board:@player_board)
