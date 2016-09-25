@@ -214,3 +214,16 @@ After that, back to fleet.rb and initialize the new FleetStatus class. After
 that, setup should be done. Of course, the shooting algorithm is the next big
 task, but I suspect everything's going to be a lot easier with the new data
 structures, i.e., with fleet info all available in one place.
+
+============
+
+The current task is to finish allowing the player to place his ships. In the
+most recent refactoring, I completely replaced fleet.rb with a new navy.rb and
+other things. The result is much simpler. So I'll finish letting the player
+place his ships (something I've been wanting to finish for a while), and then,
+finally, I'm going to go back and rewrite those unit tests. That's going to take
+a long time, but maybe not *too* long since the code runs well and I've already
+written a lot of similar tests (but only on some of the code). Only then will it
+make sense to continue.
+
+This iteration is MUCH MUCH cleaner than it ever has been before.

@@ -1,7 +1,6 @@
 require "minitest/autorun"
 require "./lib/settings"
 require "./lib/game_wrapping.rb" # this handily includes all game files
-include GameWrappingModule
 
 class TestGameDaemon < Minitest::Test
   def setup

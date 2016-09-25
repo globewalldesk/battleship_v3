@@ -1,9 +1,7 @@
 require "./lib/settings"
 require "minitest/autorun"
 require "./lib/board"
-include BoardModule
 require "./lib/misc"
-include MiscModule
 
 class TestBoard < Minitest::Test
   def setup
