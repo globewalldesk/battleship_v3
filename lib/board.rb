@@ -1,4 +1,4 @@
-require './lib/settings'
+require 'Colorize'
 
 # Strictly limited to the appearance of the Battleship board, both for the
 # computer and the player. Subclasses include PlayerBoard and ComputerBoard,
@@ -19,12 +19,18 @@ class Board
   # array, *not* just a few coordinates
   def display_board
     puts @board_header
-    puts "      a   b   c   d   e   f   g   h   i   j", "\n"
+    puts "      1   2   3   4   5   6   7   8   9  10", "\n"
     n = 0
+    letters = "abcdefghij"
     @board.each do |row|
-      printable = "#{n+1} " if n < 9
-      printable = "#{n+1}" if n == 9
-      row.each {|col| printable << ("   " + col) }
+      printable = "#{letters[n]} "
+      m = 0
+      row.each do |col|
+        printable << ("   " +
+          # the following prints the symbol with highlight if it's new
+          highlight_print(col:col, board:@board, n_and_m:[n,m])) # in misc.rb
+        m += 1
+      end
       print " #{printable}\n\n" if n < 9
       print " #{printable}\n" if n == 9
       n += 1
@@ -59,7 +65,7 @@ class Board
     # I'm trying to take the coordinates given and flip just the right '.' in @board
     ship.coords.each do |coord|
       row, col = coord
-      self.board[row][col] = ship.unhit
+      self.board[row][col] = [ship.unhit, true] # "true" means it'll be highlighted
     end
   end
 
@@ -79,27 +85,39 @@ class Board
         answer = print_message_and_clear_and_get_input
       end
     end
-    puts "answer = #{answer}"
     return answer
   end
 
-  def get_player_coords(ship)
+  ############################################################################
+
+  def get_player_coords(orientation, ship, fleet)
     coords_ok_format = false
+    coords_ok = false
     answer = ""
-    $message << "Place the top/left edge of your #{ship.type} (e.g., 1a): "
-    answer = show_board_and_get_input
+    $message << "Where shall we put the top/left edge of your #{ship.type} (e.g., a1)? "
+    answer = print_message_and_clear_and_get_input
     until coords_ok_format == true
-      if true # NEED TO FILL THIS IN
+      if answer =~ /^([a-j]){1}([1-9]|0[1-9]|10)$/ # answer is of form a1-j10
         coords_ok_format = true
+        input_coords = [$1, $2.to_i] # regexen rule
+        base_coords = human_coords_to_compu_coords(input_coords)
+        ShipCoords.new(ship:ship, fleet:fleet,
+          player_orientation:orientation, player_base_coords:base_coords)
+        if ship.valid_coords == true
+          $message << "#{ship.type.capitalize.light_yellow.bold.on_blue} placed at #{answer}. "
+        else
+          $message << "Those coordinates don't work. "
+          break
+        end
       else
-        $message << "Please follow the format \"1a\": "
+        $message << "Invalid format. Please follow the format \"1a\": "
         answer = print_message_and_clear_and_get_input
       end
     end
-    puts "answer = #{answer}"
-    return answer
+    return coords_ok
   end
 
+  ############################################################################
 
   # Given Shotlist, writes shots to board.
 

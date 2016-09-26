@@ -1,17 +1,22 @@
-require "./lib/settings"
 require "./lib/misc.rb"
-require "./lib/board.rb"
 
 ###############################################################################
 
 # ShipCoords are the coordinates of a given ship (NOT of the whole fleet).
 # The coords themselves are an attribute of @ship.
 class ShipCoords
-  attr_accessor :ship, :fleet, :valid, :coords
+  attr_accessor :ship, :fleet, :valid, :coords, :player_orientation,
+    :player_base_coords
   def initialize(options)
     @ship = options[:ship]
     @fleet = options[:fleet]
-    loop_until_valid_automatically_obtained # may be complexified for players
+    @player_orientation = options[:player_orientation]
+    @player_base_coords = options[:player_base_coords]
+    # If ShipCoords was called by board.rb when the player input orientation
+    # and coords, test the player's input and spit back result; otherwise,
+    # generate coords automatically
+    @player_orientation ? test_player_coord_input :
+      loop_until_valid_automatically_obtained
   end
 
   #############################################################################
@@ -24,7 +29,7 @@ class ShipCoords
     # iterate coord_count times
     @ship.coord_count.times do |coord|
       @ship.coords << [row, col] # begin by adding base_coords
-      orientation == "horiz" ? col += 1 : row += 1
+      orientation == "h" ? col += 1 : row += 1
     end
   end
 
@@ -74,7 +79,8 @@ class ShipCoords
   # combined with ship & fleet info, generates a placement and
   # confirms whether it's OK. If not, we loop again.
   def finalize_ship_coords(orientation, base_coords)
-    calculate_rest_of_ship_coords(orientation, base_coords) # makes set to test
+    # makes set of coords to test
+    calculate_rest_of_ship_coords(orientation, base_coords)
     # short-circuit evaluation makes this work
     return false unless ship_coords_are_all_on_board &&
       ship_coords_are_consistent_with_fleet
@@ -86,29 +92,19 @@ class ShipCoords
   def loop_until_valid_automatically_obtained
     confirmed_valid = false # invalid until proven valid!
     until confirmed_valid == true
-      orientation = (rand(2) == 0 ? "vert" : "horiz") # get random orientation
-      base_coords = get_random_coords # from MiscModule
+      orientation = (rand(2) == 0 ? "v" : "h") # get random orientation
+      base_coords = get_random_coords # from Misc
       confirmed_valid = finalize_ship_coords(orientation, base_coords)
     end
   end
 
-
-  #############################################################################
-  # THE FOLLOWING MIGHT BE USED FOR NON-AUTOMATICALLY CREATED COORDS
   #############################################################################
 
-  def loop_until_valid_player_coords_obtained
-    confirmed_valid = false
-    # loop for this (single) ship until orientation and coords are input
-    # and valid
-    until confirmed_valid == true
-      @board.display_board
-      #orientation = get_player_orientation
-      #base_coords = get_player_coords
-      confirmed_valid = true # remove after above are built
-      #confirmed_valid = finalize_ship_coords(orientation, base_coords)
-    end
+  # Test that coords input by player are groovy
+  def test_player_coord_input
+    # true if finalize_ship_coords == true
+    @ship.valid_coords = finalize_ship_coords(@player_orientation,
+      @player_base_coords)
   end
-
 
 end # of ShipCoords

@@ -1,9 +1,8 @@
-require './lib/settings'
 require './lib/board'
 require './lib/ship'
 require './lib/ship_coords'
 
-# The individual ships and fleet of a contender (player or enemy)
+# The individual ships, fleet, and board of a contender (player or enemy)
 class Navy
   attr_accessor :contender, :fleet, :board, :carrier, :battleship, :submarine,
   :warship, :destroyer
@@ -62,16 +61,16 @@ class Navy
     end # of this ship
   end
 
+  ############################################################################
+
   # solicit coords from player (placed within ship objects)
   def get_ship_coords_from_player
     @fleet.each do |ship|
-      valid_coords = false
-      until valid_coords == true
-        @board.get_player_orientation(ship)
-        @board.get_player_coords(ship) # FINISH THIS!!!
+      until ship.valid_coords == true #ship knows if its coords are valid
+        orientation = @board.get_player_orientation(ship)
+        @board.get_player_coords(orientation, ship, @fleet)
       end
-      # Next, check that the coords fit on the board; use ShipCoords for this
-      # Finally, @board.save_ship_to_board(ship)
+      @board.save_ship_to_board(ship)
     end
   end
 

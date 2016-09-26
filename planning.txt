@@ -90,7 +90,7 @@ DisplayedBoard: Displays the board to the user.
   # Given a PublicBoard, displays it to the user.
 
 ======================
-fleet.rb Module
+fleet.rb Module (mostly replaced by Navy)
 
 FleetConstructor: Creates ships of the fleet (setup only).
   # Creates the ships of the fleet; this method knows the five ship types.
@@ -185,45 +185,22 @@ GameDaemon: Starts and stops the game.
 ==================
 
 TO DO NEXT:
-... (3) do refactoring, which might end up being a massive job, but at the
-same time, go back and write a zillion unit tests and get them passing.—
+Refactoring is finished! There are a few places where I would like to refactor
+my refactoring, but it's looking so much better than it did before.
 
-While doing the above, make a list of things to do in order when writing code!
+Next, I need to do make a zillion unit tests.
+
+I also want to make a list of things to do in order when writing code!
 Share with mentors and get feedback. (This might include commenting classes,
 writing tests, etc.) Then make SuperMemo questions out of it so you don't
-forget. Finish "Coding Rules" and "The Way to Program."
-
-                                  ...At the very least I'm going to take Joe's
-advice and add .carrier, .battleship, etc., methods that point to the object.
-I'm also curious to see if I find and reduce some redundancy and entanglement.
-In some places, I need to be passing arguments and getting returns rather than
-hiding everything. I'm fairly sure a great way forward to refactor is to make
-the classes much simpler and fiddle with the things that need changing (such
-as adding the heading "Player Zone" or "Enemy Zone") outside of the poor
-abused (complexified) class. Another thing that needs doing is making the
-structs into classes; might as well, that was the original plan after all.
-
-Then comes player placing the ships on the board by hand. This entails doing
-get_player_orientation and get_player_coords, and getting that code
-consistent with the rest...it might be automatically.
+forget. Finish "Coding Rules" and "The Way to Program." One big thing I have
+learned lately is that it is a really, really bad idea to try to shoehorn
+things into your imperfect notion of classes, and that sometimes the cleanest
+lines would look rather messy/jumbled when described in the abstract in advance.
 
 Another thing I'd like to do is to change the automatic ship placement so that
 ships are never right next to each other.
 
-After that, back to fleet.rb and initialize the new FleetStatus class. After
-that, setup should be done. Of course, the shooting algorithm is the next big
-task, but I suspect everything's going to be a lot easier with the new data
-structures, i.e., with fleet info all available in one place.
-
-============
-
-The current task is to finish allowing the player to place his ships. In the
-most recent refactoring, I completely replaced fleet.rb with a new navy.rb and
-other things. The result is much simpler. So I'll finish letting the player
-place his ships (something I've been wanting to finish for a while), and then,
-finally, I'm going to go back and rewrite those unit tests. That's going to take
-a long time, but maybe not *too* long since the code runs well and I've already
-written a lot of similar tests (but only on some of the code). Only then will it
-make sense to continue.
-
-This iteration is MUCH MUCH cleaner than it ever has been before.
+Of course, the shooting algorithm is the next big task, but I suspect
+everything's going to be a lot easier with the new data structures, i.e., with
+fleet info all available in one place.

@@ -1,13 +1,12 @@
-require './lib/settings'
-
 class Ship
-  attr_accessor :type, :coords, :coord_count, :unhit, :sunk
+  attr_accessor :type, :coords, :coord_count, :unhit, :sunk, :valid_coords
   # :board probably won't be needed
   def initialize(type)
     @type = type
     @coords = [] # placeholder for later construction
+    @valid_coords = false # until proven true
     construct_ship_details
-    
+
   end
 
   def construct_ship_details
@@ -25,8 +24,6 @@ class Ship
     end
     @unhit = @type[0].upcase # e.g., 'B'
     @sunk = @type[0].downcase # e.g., 'b'
-    # the following probably won't be needed
-    # ship.board = @board # remember, the dots are at this.board
   end
 
 end # of class Ship
